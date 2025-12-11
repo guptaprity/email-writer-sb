@@ -1,29 +1,27 @@
-FROM eclipse-temurin:17-jdk
+# ===============================
+# 1. BUILD STAGE
+# ===============================
+FROM eclipse-temurin:17-jdk AS builder
 
 WORKDIR /app
 
-# Copy Maven wrapper
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
+COPY src src
 
-# FIX: Make mvnw executable
 RUN chmod +x mvnw
-
-# Download dependencies
-RUN ./mvnw dependency:go-offline
-
-# Copy source code
-COPY src ./src
-
-# Build the JAR
 RUN ./mvnw clean package -DskipTests
 
-# Show target folder contents
-RUN ls -l target
 
-# Copy final jar
-COPY target/*SNAPSHOT.jar app.jar
+# ===============================
+# 2. RUNTIME STAGE
+# ===============================
+FROM eclipse-temurin:17-jre
+
+WORKDIR /app
+
+COPY --from=builder /app/target/*SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
