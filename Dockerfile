@@ -4,9 +4,10 @@ WORKDIR /app
 
 COPY . .
 
+RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
-COPY target/email-writer-sb-0.0.1-SNAPSHOT.jar app.jar
+COPY target/*.jar app.jar
 
 EXPOSE 8080
 
