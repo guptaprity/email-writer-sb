@@ -2,12 +2,20 @@ FROM eclipse-temurin:17-jdk
 
 WORKDIR /app
 
-COPY . .
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+RUN ./mvnw dependency:go-offline
+
+COPY src src
 
 RUN chmod +x mvnw
 RUN ./mvnw clean package -DskipTests
 
-COPY target/*.jar app.jar
+# JAR WILL ALWAYS BE IN target/
+RUN ls -l target
+
+COPY target/*SNAPSHOT.jar app.jar
 
 EXPOSE 8080
 
