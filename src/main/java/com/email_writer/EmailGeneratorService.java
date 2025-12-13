@@ -8,9 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-
-
-
 @Service
 public class EmailGeneratorService {
 
@@ -20,14 +17,11 @@ public class EmailGeneratorService {
     public EmailGeneratorService(WebClient.Builder webClientBuilder,
             @Value("${gemini.api.url}")  String baseUrl,
             @Value("${gemini.api.key}")  String geminiApiKey) {
-
-
         this.apiKey = geminiApiKey;
         this.webClient = webClientBuilder.baseUrl(baseUrl)
                 .build();
 
     }
-
     public String generateEmailReply(EmailRequest emailRequest) {
        //Build Prompt
        String prompt = buildPrompt(emailRequest);
